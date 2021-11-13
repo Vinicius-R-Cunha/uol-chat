@@ -138,6 +138,12 @@ textarea:focus, input:focus{
     color: #000000;
 }
 
+.footer div {
+    height: 80px;
+    
+    display: flex;
+    align-items: center;
+}
 
 .footer ion-icon {
     width: 32px;
