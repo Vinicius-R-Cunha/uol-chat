@@ -18,12 +18,10 @@ function getName() {
 
     const participants = axios.post("https://mock-api.driven.com.br/api/v4/uol/participants", {name: namePicked});
 
-    // Apagar isso depois
     participants.then(userAvaiable);
     participants.catch(userNotAvaiable);
 }
 
-// Apagar isso depois
 function userAvaiable() {
     console.log(namePicked);
     stillOnline();
@@ -31,7 +29,6 @@ function userAvaiable() {
 }
 
 function userNotAvaiable() {
-    // Apagar isso depois
     alert('NICK NAO DISPONIVEL');
 
     getName();
@@ -46,8 +43,7 @@ function requestUpdate() {
 
 function messagesReceived(answer) {
     
-    // console.log('mensagens carregadas');
-    let elementoQueQueroQueApareca;
+    let elementToScroll;
     
     chat.innerHTML = "";
     for (let i = 0; i < answer.data.length; i++) {
@@ -70,9 +66,7 @@ function messagesReceived(answer) {
                 <p class="message" data-identifier="message"> <span class="time"> (${time}) </span> <strong> ${from} </strong> para <strong class="margin-right"> ${to}: </strong> ${text} </p>
             </div>
             `
-        } else if (namePicked === to) {
-            // console.log(namePicked);
-            // console.log(to);
+        } else if (namePicked === to || namePicked === from) {
             chat.innerHTML += `
             <div class="private">
                 <p class="message" data-identifier="message"> <span class="time"> (${time}) </span> <strong> ${from} </strong> reservadamente para <strong class="margin-right"> ${to}: </strong> ${text} </p>
@@ -80,8 +74,8 @@ function messagesReceived(answer) {
             `
         }
     }    
-    elementoQueQueroQueApareca = document.querySelector('.main div:last-child');
-    elementoQueQueroQueApareca.scrollIntoView();
+    elementToScroll = document.querySelector('.main div:last-child');
+    elementToScroll.scrollIntoView();
 }
 
 function confirmation() {
@@ -92,24 +86,29 @@ function stillOnline() {
     status.then(confirmation);
 }
 
-const input = document.querySelector('.footer input');
+
+let input = document.querySelector('.footer div input');
+let nameSelected;
 
 function sendMessage() {
     const text = input.value;
+    let send;
 
-    // se for vazio nem faz nada na funcao
+    // if text is empty do nothing
     if (text === "") {
         return;
     }
 
-    const send = axios.post("https://mock-api.driven.com.br/api/v4/uol/messages", {from: namePicked, to: 'Todos', text: text, type: "message"});
-
+    if (nameSelected === undefined || nameSelected ==="Todos") {
+        send = axios.post("https://mock-api.driven.com.br/api/v4/uol/messages", {from: namePicked, to: 'Todos', text: text, type: "message"});
+    } else {
+        send = axios.post("https://mock-api.driven.com.br/api/v4/uol/messages", {from: namePicked, to: nameSelected, text: text, type: "private_message"});
+    }
+    
     send.then(requestUpdate);
     send.catch(() => window.location.reload());
 
     input.value = "";
-
-    // console.log('clicado');
 }
 
 input.addEventListener("keyup", function(event) {
@@ -123,7 +122,7 @@ const body = document.querySelector('body')
 const participantsTab = document.querySelector('.participants-tab');
 
 function openParticipantsTab() {
-    // faz o scroll parar
+    // stop scroll
     body.classList.add('stop-scroll');
     chat.classList.add('stop-scroll');
 
@@ -132,7 +131,7 @@ function openParticipantsTab() {
 }
 
 function closeParticipantsTab() {
-    // faz o scroll voltar
+    // bring scroll back
     body.classList.remove('stop-scroll');
     chat.classList.remove('stop-scroll');
 
@@ -141,8 +140,6 @@ function closeParticipantsTab() {
 }
 
 function getParticipants() {
-    // console.log('participantes atualizados')
-
     const participantsList = axios.get("https://mock-api.driven.com.br/api/v4/uol/participants");
     participantsList.then(displayParticipants);
 }
@@ -154,7 +151,7 @@ let checkUpName;
 function displayParticipants(usersOnline) {
     const usersList = document.querySelector('.users');
     
-    // ion-icon que tem o check 
+    // ion-icon with check 
     let ionIcon = document.querySelector('.users div .show');
 
     if (ionIcon !== null) {
@@ -165,7 +162,7 @@ function displayParticipants(usersOnline) {
     
     if (checkUpName === "Todos") {
         usersList.innerHTML = `
-        <div onclick="selectParticipant(this)">
+        <div data-identifier="participant" onclick="selectParticipant(this)">
             <ion-icon name="people-sharp"></ion-icon>
             <p>Todos</p>
             <ion-icon class="check show" name="checkmark-sharp"></ion-icon>
@@ -173,7 +170,7 @@ function displayParticipants(usersOnline) {
         `
     } else {
         usersList.innerHTML = `
-        <div onclick="selectParticipant(this)">
+        <div data-identifier="participant" onclick="selectParticipant(this)">
             <ion-icon name="people-sharp"></ion-icon>
             <p>Todos</p>
             <ion-icon class="check hidden" name="checkmark-sharp"></ion-icon>
@@ -185,7 +182,7 @@ function displayParticipants(usersOnline) {
         
         if (checkUpName === usersOnline.data[i].name) {
             usersList.innerHTML += `
-            <div onclick="selectParticipant(this)">
+            <div data-identifier="participant" onclick="selectParticipant(this)">
                 <ion-icon name="person-circle-sharp"></ion-icon>
                 <p>${usersOnline.data[i].name}</p>
                 <ion-icon class="check show" name="checkmark-sharp"></ion-icon>
@@ -193,7 +190,7 @@ function displayParticipants(usersOnline) {
             `
         } else {
             usersList.innerHTML += `
-            <div onclick="selectParticipant(this)">
+            <div data-identifier="participant" onclick="selectParticipant(this)">
                 <ion-icon name="person-circle-sharp"></ion-icon>
                 <p>${usersOnline.data[i].name}</p>
                 <ion-icon class="check hidden" name="checkmark-sharp"></ion-icon>
@@ -202,7 +199,7 @@ function displayParticipants(usersOnline) {
         }
     }
 
-    // renovo o ion-icon selecionado, caso nenhum esteja depois de atualizar acima
+    // renew ion-icon, to use below
     ionIcon = document.querySelector('.users div .show');
 
     if (ionIcon === null) {
@@ -215,8 +212,10 @@ function displayParticipants(usersOnline) {
 function selectParticipant(participant) {
 
     const check = participant.querySelector('.check');
-    const nameSelected = participant.querySelector('p').innerHTML;
+    nameSelected = participant.querySelector('p').innerHTML;
     const ionIconShowing = document.querySelector('.users div .show');
+
+    const inputDiv = document.querySelector('.footer div');
 
     if (check.classList.contains("show")) {
         return;
@@ -227,27 +226,53 @@ function selectParticipant(participant) {
             ionIconShowing.classList.remove('show');
         }
         
-        // coloca o check no que foi clicado
+        // check the clicked one
         check.classList.add('show');
         check.classList.remove('hidden');
 
         ionPrivate.classList.add('hidden');
         ionPublic.classList.remove('hidden');
 
+        // changes input
+        inputDiv.classList.remove('send-private');
+        inputDiv.classList.add('send-to-all');
+
+        inputDiv.innerHTML = `
+            <input type="text" placeholder="Escreva aqui...">
+        `
     } else { 
-        // tira o check do que estiver
+        // removes check of last
         if (ionIconShowing !== null) {
             ionIconShowing.classList.add('hidden');
             ionIconShowing.classList.remove('show');
         }
         
-        // coloca o check no que foi clicado
+        // check the clicked one
         check.classList.add('show');
         check.classList.remove('hidden');
 
         ionPublic.classList.add('hidden');
         ionPrivate.classList.remove('hidden');
+
+        // changes input
+        inputDiv.classList.remove('send-to-all');
+        inputDiv.classList.add('send-private');
+
+        inputDiv.innerHTML = `
+            <input type="text" placeholder="Escreva aqui...">
+            <div class="send-to"><p>Enviando para ${nameSelected} (reservadamente)</p></div>
+        `
     }
+    // update input every click
+    input = document.querySelector('.footer div input');
+
+    // update enter funcionality
+    input.addEventListener("keyup", function(event) {
+        if (event.keyCode === 13) {
+         event.preventDefault();
+         document.querySelector(".send-button").click();
+        }
+    })
 }
 
 
