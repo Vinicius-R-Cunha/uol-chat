@@ -12,6 +12,18 @@
     <title>Bate-Papo UOL</title>
 </head>
 <body>
+
+    <div class="login-screen">
+        <img class="logo-login" src="media/logo 1.png">
+        <input class="login-input" data-identifier="enter-name" type="text" placeholder="Digite seu nome">
+        <button class="enter" data-identifier="start" onclick="getName()">Entrar</button>
+        <div class="loading hidden">
+            <img  src="media/loading.gif">
+            <p>Entrando...</p>
+        </div>    
+    </div>
+
+
     <header class="header">
         <img src="media/logo 1.png">
         <ion-icon onclick="openParticipantsTab()" name="people"></ion-icon>
