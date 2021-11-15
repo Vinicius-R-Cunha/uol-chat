@@ -8,6 +8,99 @@ strong {
     font-weight: bold;
 }
 
+.login-screen {
+    width: 100%;
+    height: 100%;
+
+    background-color: #FFFFFF;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    position: fixed;
+    top: 0;
+    z-index: 3;
+}
+
+.login-screen .logo-login {
+    width: 130px;
+    height: 92px;
+
+    margin: 70px 0 100px 0;
+}
+
+.login-screen .login-input {
+    width: 260px;
+    height: 54px;
+
+    font-family: Roboto;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 25px;
+
+    text-align: center;
+
+    border: 2px solid #D7D7D7;
+    border-radius: 6px;
+}
+
+.login-screen .login-input::placeholder {
+    font-family: Roboto;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 25px;
+
+    color: #AEAEAE;
+}
+
+.login-screen button {
+    width: 109px;
+    height: 45px;
+
+    font-family: Roboto;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 25px;
+
+    color: #696969;
+
+    margin-top: 15px;
+
+    background-color: #E7E7E7;
+
+    border: hidden;
+    border-radius: 9px;
+
+    overflow: hidden;
+}
+
+.loading {
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+
+    position: relative;
+}
+
+.loading img {
+    width: 300px;
+}
+
+.loading p {
+    font-family: Roboto;
+    font-weight: 700;
+    font-size: 18px;
+
+    position: absolute;
+
+    bottom: 30px;
+}
+
 .header {
     width: 100%;
     height: 80px;
@@ -123,6 +216,8 @@ strong {
     background-color: #FFFFFF;
 
     overflow-y: scroll;
+
+    word-break: break-word;
 }
 
 .hidden {
@@ -175,15 +270,13 @@ strong {
 }
 
 .list div {
-    width: 100%;
+    width: 80%;
 
     display: flex;
 
     margin-bottom: 10px;
 
     flex-shrink: 0;
-
-    position: relative;
 }
 
 
@@ -191,6 +284,8 @@ strong {
     font-size: 25px;
     
     margin-left: 20px;
+
+    flex-shrink: 0;
 }
 
 .list .lock {

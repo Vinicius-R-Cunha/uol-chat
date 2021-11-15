@@ -4,37 +4,62 @@ setInterval(requestUpdate,3000);
 getParticipants();
 setInterval(getParticipants,10000);
 
-const chat = document.querySelector('.main');
+const chat = document.querySelector(".main");
 
 let namePicked;
+const nameInputed = document.querySelector(".login-input");
+const enterButton = document.querySelector(".enter");
+const loading = document.querySelector(".loading");
 
 function getName() {
-    do {
-        namePicked = prompt("Digite o seu nick:");
-        if (namePicked === "Todos") {
-            alert('NICK NAO DISPONIVEL');
-        }
-    } while (namePicked === "Todos")
 
+    if (nameInputed.value !== "Todos") {
+        namePicked = nameInputed.value;
+    } else {
+        userNotAvaiable();
+    }
     const participants = axios.post("https://mock-api.driven.com.br/api/v4/uol/participants", {name: namePicked});
 
+    // show loading gif
+    nameInputed.classList.add("hidden");
+    enterButton.classList.add("hidden");
+    loading.classList.remove("hidden");
+    
     participants.then(userAvaiable);
     participants.catch(userNotAvaiable);
 }
 
+nameInputed.addEventListener("keyup", function(event) {
+    if (event.keyCode === 13) {
+     event.preventDefault();
+     document.querySelector(".enter").click();
+    }
+})
+
 function userAvaiable() {
+    const loginScreen = document.querySelector('.login-screen');
+
     console.log(namePicked);
     stillOnline();
     setInterval(stillOnline,5000);
+
+    loginScreen.classList.add('hidden');
 }
 
 function userNotAvaiable() {
-    alert('NICK NAO DISPONIVEL');
+    nameInputed.value = "";
+    nameInputed.placeholder = "Nome não disponível";
 
-    getName();
+    nameInputed.classList.remove("hidden");
+    enterButton.classList.remove("hidden");
+    loading.classList.add("hidden");
+
+    setTimeout(changePlaceholder,1500);
 }
 
-getName();
+function changePlaceholder() {
+    nameInputed.placeholder = "Digite seu nome";
+}
 
 function requestUpdate() {
     const messages = axios.get("https://mock-api.driven.com.br/api/v4/uol/messages");
@@ -126,6 +151,7 @@ function openParticipantsTab() {
     body.classList.add('stop-scroll');
     chat.classList.add('stop-scroll');
 
+    
     participantsTab.classList.remove('hidden');
     participantsTab.classList.add('show');
 }
