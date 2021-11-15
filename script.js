@@ -11,6 +11,9 @@ let namePicked;
 function getName() {
     do {
         namePicked = prompt("Digite o seu nick:");
+        if (namePicked === "Todos") {
+            alert('NICK NAO DISPONIVEL');
+        }
     } while (namePicked === "Todos")
 
     const participants = axios.post("https://mock-api.driven.com.br/api/v4/uol/participants", {name: namePicked});
@@ -82,7 +85,6 @@ function messagesReceived(answer) {
 }
 
 function confirmation() {
-    // console.log('online')
 }
 
 function stillOnline() {
@@ -145,14 +147,16 @@ function getParticipants() {
     participantsList.then(displayParticipants);
 }
 
+const ionPublic = document.querySelector('.ion-public');
+const ionPrivate = document.querySelector('.ion-private');
 let checkUpName;
 
 function displayParticipants(usersOnline) {
     const usersList = document.querySelector('.users');
-
-    // ion-icon que tem o check 
-    const ionIcon = document.querySelector('.users div .show')
     
+    // ion-icon que tem o check 
+    let ionIcon = document.querySelector('.users div .show');
+
     if (ionIcon !== null) {
         checkUpName = ionIcon.parentNode.querySelector('p').innerHTML
     }
@@ -162,17 +166,17 @@ function displayParticipants(usersOnline) {
     if (checkUpName === "Todos") {
         usersList.innerHTML = `
         <div onclick="selectParticipant(this)">
-        <ion-icon name="people-sharp"></ion-icon>
-        <p>Todos</p>
-        <ion-icon class="check show" name="checkmark-sharp"></ion-icon>
+            <ion-icon name="people-sharp"></ion-icon>
+            <p>Todos</p>
+            <ion-icon class="check show" name="checkmark-sharp"></ion-icon>
         </div>
         `
     } else {
         usersList.innerHTML = `
         <div onclick="selectParticipant(this)">
-        <ion-icon name="people-sharp"></ion-icon>
-        <p>Todos</p>
-        <ion-icon class="check hidden" name="checkmark-sharp"></ion-icon>
+            <ion-icon name="people-sharp"></ion-icon>
+            <p>Todos</p>
+            <ion-icon class="check hidden" name="checkmark-sharp"></ion-icon>
         </div>
         `
     }
@@ -182,48 +186,69 @@ function displayParticipants(usersOnline) {
         if (checkUpName === usersOnline.data[i].name) {
             usersList.innerHTML += `
             <div onclick="selectParticipant(this)">
-            <ion-icon name="person-circle-sharp"></ion-icon>
-            <p>${usersOnline.data[i].name}</p>
-            <ion-icon class="check show" name="checkmark-sharp"></ion-icon>
+                <ion-icon name="person-circle-sharp"></ion-icon>
+                <p>${usersOnline.data[i].name}</p>
+                <ion-icon class="check show" name="checkmark-sharp"></ion-icon>
             </div>
             `
         } else {
             usersList.innerHTML += `
             <div onclick="selectParticipant(this)">
-            <ion-icon name="person-circle-sharp"></ion-icon>
-            <p>${usersOnline.data[i].name}</p>
-            <ion-icon class="check hidden" name="checkmark-sharp"></ion-icon>
+                <ion-icon name="person-circle-sharp"></ion-icon>
+                <p>${usersOnline.data[i].name}</p>
+                <ion-icon class="check hidden" name="checkmark-sharp"></ion-icon>
             </div>
             `
         }
     }
-    
+
+    // renovo o ion-icon selecionado, caso nenhum esteja depois de atualizar acima
+    ionIcon = document.querySelector('.users div .show');
+
+    if (ionIcon === null) {
+        ionPrivate.classList.add('hidden');
+        ionPublic.classList.add('hidden');
+    }
 }
 
+
 function selectParticipant(participant) {
-    // console.log('clicou num mano ai');
+
     const check = participant.querySelector('.check');
-    
-    
+    const nameSelected = participant.querySelector('p').innerHTML;
+    const ionIconShowing = document.querySelector('.users div .show');
+
     if (check.classList.contains("show")) {
         return;
-    } else { 
-        // tira o check do que estiver
-        if (document.querySelector('.users div .show') !== null) {
-            document.querySelector('.users div .show').classList.add('hidden');
-            document.querySelector('.users div .show').classList.remove('show');
+    } else if (nameSelected === "Todos") {
+
+        if (ionIconShowing !== null) {
+            ionIconShowing.classList.add('hidden');
+            ionIconShowing.classList.remove('show');
         }
         
         // coloca o check no que foi clicado
         check.classList.add('show');
         check.classList.remove('hidden');
+
+        ionPrivate.classList.add('hidden');
+        ionPublic.classList.remove('hidden');
+
+    } else { 
+        // tira o check do que estiver
+        if (ionIconShowing !== null) {
+            ionIconShowing.classList.add('hidden');
+            ionIconShowing.classList.remove('show');
+        }
+        
+        // coloca o check no que foi clicado
+        check.classList.add('show');
+        check.classList.remove('hidden');
+
+        ionPublic.classList.add('hidden');
+        ionPrivate.classList.remove('hidden');
     }
 }
-
-
-
-
-
 
 
 
