@@ -14,22 +14,56 @@
 <body>
     <header class="header">
         <img src="media/logo 1.png">
-        <ion-icon name="people"></ion-icon>
+        <ion-icon onclick="openParticipantsTab()" name="people"></ion-icon>
     </header>
-    <main class="main">       
-        <div class="everyone">
-            <p class="message" data-identifier="message"> <span class="time"> (12:25:50) </span> <strong> Dale </strong> para <strong class="margin-right"> Todos: </strong>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p>
+    <main class="main">             
+        <!-- <div class="everyone">
+            <p class="message" data-identifier="message"> <span class="time">(12:25:50)</span> <strong>Dale</strong>para<strong class="margin-right">Todos:</strong>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p>
         </div>
         <div class="private">
-            <p class="message" data-identifier="message"> <span class="time"> (12:25:50) </span> <strong> GruliGruli </strong> reservadamente para <strong class="margin-right"> jeremias: </strong> salve privado </p>
+            <p class="message" data-identifier="message"> <span class="time">(12:25:50)</span> <strong>GruliGruli</strong>reservadamente para<strong class="margin-right">jeremias:</strong>salve privado</p>
         </div>
         <div class="private">
-            <p class="message" data-identifier="message"> <span class="time"> (12:25:50) </span> <strong> GruliGruli </strong> reservadamente para <strong class="margin-right"> cucabeludo: </strong> salve privado </p>
-        </div>
+            <p class="message" data-identifier="message"> <span class="time">(12:25:50)</span> <strong>GruliGruli</strong>reservadamente para<strong class="margin-right">cucabeludo:</strong>salve privado</p>
+        </div> -->
     </main>
+    <div class="participants-tab hidden">
+        <div class="left-transparent" onclick="closeParticipantsTab()"></div>
+
+        <div class="right-menu">
+            <div class="contacts-title">
+                <p>Escolha um contato</p>
+                <p>para enviar mensagem:</p>
+            </div>
+            <div class="list users">
+                <!-- <div onclick="selectParticipant(this)">
+                    <ion-icon name="people-sharp"></ion-icon>
+                    <p>Todos</p>
+                    <ion-icon class="check" name="checkmark-sharp"></ion-icon>
+                </div> -->
+            </div>
+
+
+            <div  class="visibility-title">
+                <p>Escolha a visibilidade:</p>
+            </div>
+            <div class="list">
+                <div>
+                    <ion-icon class="lock" name="lock-open"></ion-icon>
+                    <p>Público</p>
+                </div>
+                <div>
+                    <ion-icon class="lock" name="lock-closed"></ion-icon>
+                    <p>Reservadamente</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    
     <footer class="footer">
         <input type="text" placeholder="Escreva aqui...">
-        <div onclick="sendMessage()">
+        <div class="send-button" data-identifier="send-message" onclick="sendMessage()">
             <ion-icon name="paper-plane-outline"></ion-icon>
         </div>
     </footer>
