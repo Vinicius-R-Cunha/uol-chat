@@ -4,6 +4,7 @@ setInterval(requestUpdate,3000);
 getParticipants();
 setInterval(getParticipants,10000);
 
+const body = document.querySelector('body');
 const chat = document.querySelector(".main");
 
 let namePicked;
@@ -39,7 +40,6 @@ nameInputed.addEventListener("keyup", function(event) {
 function userAvaiable() {
     const loginScreen = document.querySelector('.login-screen');
 
-    console.log(namePicked);
     stillOnline();
     setInterval(stillOnline,5000);
 
@@ -143,26 +143,30 @@ input.addEventListener("keyup", function(event) {
     }
 })
 
-const body = document.querySelector('body')
 const participantsTab = document.querySelector('.participants-tab');
+const leftTransparent = document.querySelector('.left-transparent');
 
 function openParticipantsTab() {
     // stop scroll
     body.classList.add('stop-scroll');
     chat.classList.add('stop-scroll');
 
-    
-    participantsTab.classList.remove('hidden');
-    participantsTab.classList.add('show');
+    participantsTab.classList.add('participants-tab-show');
+    setTimeout(removeTransparentDelay,140);
+}
+
+function removeTransparentDelay() {
+    leftTransparent.classList.remove('transparent');
 }
 
 function closeParticipantsTab() {
+    leftTransparent.classList.add('transparent');
+    participantsTab.classList.remove('participants-tab-show');
+
     // bring scroll back
     body.classList.remove('stop-scroll');
     chat.classList.remove('stop-scroll');
 
-    participantsTab.classList.add('hidden');
-    participantsTab.classList.remove('show');
 }
 
 function getParticipants() {
@@ -233,7 +237,6 @@ function displayParticipants(usersOnline) {
         ionPublic.classList.add('hidden');
     }
 }
-
 
 function selectParticipant(participant) {
 

@@ -194,15 +194,32 @@ strong {
 
     position: fixed;
     top: 0;
+
+    transition: all 0.2s;
+    transform: translateX(100%);
     
     z-index: 2;
 }
 
+.participants-tab-show {
+    transition: all 0.2s;
+    transform: translateX(0);
+}
+
+
 .left-transparent {
     width: 30%;
     height: 100%;
-
+    
     background: rgba(0, 0, 0, 0.6);
+
+    background-color: rgba(0, 0, 0, 0.6);
+    transition: background-color 0.1s ease-out;
+}
+
+.transparent {
+    background-color: rgba(0, 0, 0, 0);
+    transition: background-color 0s ease-out;
 }
 
 .right-menu {
