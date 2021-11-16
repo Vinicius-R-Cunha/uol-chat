@@ -1,9 +1,4 @@
 
-requestUpdate();
-setInterval(requestUpdate,3000);
-getParticipants();
-setInterval(getParticipants,10000);
-
 const body = document.querySelector('body');
 const chat = document.querySelector(".main");
 
@@ -44,6 +39,11 @@ function userAvaiable() {
     setInterval(stillOnline,5000);
 
     loginScreen.classList.add('hidden');
+
+    requestUpdate();
+    setInterval(requestUpdate,3000);
+    getParticipants();
+    setInterval(getParticipants,10000);
 }
 
 function userNotAvaiable() {
