@@ -1,60 +1,60 @@
-
 const body = document.querySelector('body');
 const chat = document.querySelector(".main");
-
-let namePicked;
 const nameInputed = document.querySelector(".login-input");
 const enterButton = document.querySelector(".enter");
 const loading = document.querySelector(".loading");
+let namePicked;
 
 function getName() {
-
     if (nameInputed.value !== "Todos") {
         namePicked = nameInputed.value;
     } else {
         userNotAvaiable();
     }
-    const participants = axios.post("https://mock-api.driven.com.br/api/v4/uol/participants", {name: namePicked});
+    const participants = axios.post("https://mock-api.driven.com.br/api/v4/uol/participants", { name: namePicked });
+    participants.then(userAvaiable);
+    participants.catch(userNotAvaiable);
+    showLoadingGif();
+}
 
-    // show loading gif
+function showLoadingGif() {
     nameInputed.classList.add("hidden");
     enterButton.classList.add("hidden");
     loading.classList.remove("hidden");
-    
-    participants.then(userAvaiable);
-    participants.catch(userNotAvaiable);
 }
 
-nameInputed.addEventListener("keyup", function(event) {
+function hideLoadingGif() {
+    nameInputed.classList.remove("hidden");
+    enterButton.classList.remove("hidden");
+    loading.classList.add("hidden");
+}
+
+nameInputed.addEventListener("keyup", function (event) {
     if (event.keyCode === 13) {
-     event.preventDefault();
-     document.querySelector(".enter").click();
+        event.preventDefault();
+        document.querySelector(".enter").click();
     }
 })
 
 function userAvaiable() {
     const loginScreen = document.querySelector('.login-screen');
-
-    stillOnline();
-    setInterval(stillOnline,5000);
-
     loginScreen.classList.add('hidden');
 
+    stillOnline();
+    setInterval(stillOnline, 5000);
     requestUpdate();
-    setInterval(requestUpdate,3000);
+    setInterval(requestUpdate, 3000);
     getParticipants();
-    setInterval(getParticipants,10000);
+    setInterval(getParticipants, 10000);
 }
 
 function userNotAvaiable() {
     nameInputed.value = "";
     nameInputed.placeholder = "Nome não disponível";
 
-    nameInputed.classList.remove("hidden");
-    enterButton.classList.remove("hidden");
-    loading.classList.add("hidden");
+    hideLoadingGif();
 
-    setTimeout(changePlaceholder,1500);
+    setTimeout(changePlaceholder, 1500);
 }
 
 function changePlaceholder() {
@@ -63,21 +63,19 @@ function changePlaceholder() {
 
 function requestUpdate() {
     const messages = axios.get("https://mock-api.driven.com.br/api/v4/uol/messages");
-    messages.then(messagesReceived);
+    messages.then(displayMessages);
 }
 
-function messagesReceived(answer) {
-    
-    let elementToScroll;
-    
+function displayMessages(answer) {
+
     chat.innerHTML = "";
     for (let i = 0; i < answer.data.length; i++) {
-        
-        from = answer.data[i].from;
-        to   = answer.data[i].to;
-        text = answer.data[i].text;
-        type = answer.data[i].type;
-        time = answer.data[i].time;
+
+        let from = answer.data[i].from;
+        let to = answer.data[i].to;
+        let text = answer.data[i].text;
+        let type = answer.data[i].type;
+        let time = answer.data[i].time;
 
         if (type === 'status') {
             chat.innerHTML += `
@@ -98,19 +96,14 @@ function messagesReceived(answer) {
             </div>
             `
         }
-    }    
-    elementToScroll = document.querySelector('.main div:last-child');
-    elementToScroll.scrollIntoView();
-}
+    }
 
-function confirmation() {
+    document.querySelector('.main div:last-child').scrollIntoView();
 }
 
 function stillOnline() {
-    const status = axios.post("https://mock-api.driven.com.br/api/v4/uol/status", {name: namePicked});
-    status.then(confirmation);
+    axios.post("https://mock-api.driven.com.br/api/v4/uol/status", { name: namePicked });
 }
-
 
 let input = document.querySelector('.footer div input');
 let nameSelected;
@@ -119,27 +112,26 @@ function sendMessage() {
     const text = input.value;
     let send;
 
-    // if text is empty do nothing
     if (text === "") {
         return;
     }
 
-    if (nameSelected === undefined || nameSelected ==="Todos") {
-        send = axios.post("https://mock-api.driven.com.br/api/v4/uol/messages", {from: namePicked, to: 'Todos', text: text, type: "message"});
+    if (nameSelected === undefined || nameSelected === "Todos") {
+        send = axios.post("https://mock-api.driven.com.br/api/v4/uol/messages", { from: namePicked, to: 'Todos', text: text, type: "message" });
     } else {
-        send = axios.post("https://mock-api.driven.com.br/api/v4/uol/messages", {from: namePicked, to: nameSelected, text: text, type: "private_message"});
+        send = axios.post("https://mock-api.driven.com.br/api/v4/uol/messages", { from: namePicked, to: nameSelected, text: text, type: "private_message" });
     }
-    
+
     send.then(requestUpdate);
     send.catch(() => window.location.reload());
 
     input.value = "";
 }
 
-input.addEventListener("keyup", function(event) {
+input.addEventListener("keyup", function (event) {
     if (event.keyCode === 13) {
-     event.preventDefault();
-     document.querySelector(".send-button").click();
+        event.preventDefault();
+        document.querySelector(".send-button").click();
     }
 })
 
@@ -147,12 +139,11 @@ const participantsTab = document.querySelector('.participants-tab');
 const leftTransparent = document.querySelector('.left-transparent');
 
 function openParticipantsTab() {
-    // stop scroll
     body.classList.add('stop-scroll');
     chat.classList.add('stop-scroll');
 
     participantsTab.classList.add('participants-tab-show');
-    setTimeout(removeTransparentDelay,140);
+    setTimeout(removeTransparentDelay, 140);
 }
 
 function removeTransparentDelay() {
@@ -163,10 +154,8 @@ function closeParticipantsTab() {
     leftTransparent.classList.add('transparent');
     participantsTab.classList.remove('participants-tab-show');
 
-    // bring scroll back
     body.classList.remove('stop-scroll');
     chat.classList.remove('stop-scroll');
-
 }
 
 function getParticipants() {
@@ -180,16 +169,14 @@ let checkUpName;
 
 function displayParticipants(usersOnline) {
     const usersList = document.querySelector('.users');
-    
-    // ion-icon with check 
     let ionIcon = document.querySelector('.users div .show');
 
     if (ionIcon !== null) {
         checkUpName = ionIcon.parentNode.querySelector('p').innerHTML
     }
-    
+
     usersList.innerHTML = '';
-    
+
     if (checkUpName === "Todos") {
         usersList.innerHTML = `
         <div data-identifier="participant" onclick="selectParticipant(this)">
@@ -207,9 +194,8 @@ function displayParticipants(usersOnline) {
         </div>
         `
     }
-    
+
     for (let i = 0; i < usersOnline.data.length; i++) {
-        
         if (checkUpName === usersOnline.data[i].name) {
             usersList.innerHTML += `
             <div data-identifier="participant" onclick="selectParticipant(this)">
@@ -229,7 +215,6 @@ function displayParticipants(usersOnline) {
         }
     }
 
-    // renew ion-icon, to use below
     ionIcon = document.querySelector('.users div .show');
 
     if (ionIcon === null) {
@@ -239,51 +224,43 @@ function displayParticipants(usersOnline) {
 }
 
 function selectParticipant(participant) {
-
     const check = participant.querySelector('.check');
     nameSelected = participant.querySelector('p').innerHTML;
     const ionIconShowing = document.querySelector('.users div .show');
-
     const inputDiv = document.querySelector('.footer div');
 
     if (check.classList.contains("show")) {
         return;
     } else if (nameSelected === "Todos") {
-
         if (ionIconShowing !== null) {
             ionIconShowing.classList.add('hidden');
             ionIconShowing.classList.remove('show');
         }
-        
-        // check the clicked one
+
         check.classList.add('show');
         check.classList.remove('hidden');
 
         ionPrivate.classList.add('hidden');
         ionPublic.classList.remove('hidden');
 
-        // changes input
         inputDiv.classList.remove('send-private');
         inputDiv.classList.add('send-to-all');
 
         inputDiv.innerHTML = `
             <input type="text" placeholder="Escreva aqui...">
         `
-    } else { 
-        // removes check of last
+    } else {
         if (ionIconShowing !== null) {
             ionIconShowing.classList.add('hidden');
             ionIconShowing.classList.remove('show');
         }
-        
-        // check the clicked one
+
         check.classList.add('show');
         check.classList.remove('hidden');
 
         ionPublic.classList.add('hidden');
         ionPrivate.classList.remove('hidden');
 
-        // changes input
         inputDiv.classList.remove('send-to-all');
         inputDiv.classList.add('send-private');
 
@@ -292,17 +269,13 @@ function selectParticipant(participant) {
             <div class="send-to"><p>Enviando para ${nameSelected} (reservadamente)</p></div>
         `
     }
-    // update input every click
+
     input = document.querySelector('.footer div input');
 
-    // update enter funcionality
-    input.addEventListener("keyup", function(event) {
+    input.addEventListener("keyup", function (event) {
         if (event.keyCode === 13) {
-         event.preventDefault();
-         document.querySelector(".send-button").click();
+            event.preventDefault();
+            document.querySelector(".send-button").click();
         }
     })
 }
-
-
-
